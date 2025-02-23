@@ -82,15 +82,14 @@
         let tempo = 60;
         let timerInterval;
         let lastAcceleration = { x: 0, y: 0, z: 0 };
-        let motionThreshold = 2; // Define um limite para evitar detecção excessiva
+        let motionThreshold = 2; // Sensibilidade do movimento
+        let lastMoveTime = 0; // Controle para evitar múltiplos acertos rápidos
 
         function iniciarJogo() {
             clearInterval(timerInterval);
-            tempo = 60;
             acertos = 0;
             erros = 0;
             index = 0;
-            document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
             document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
             proximaPergunta();
             timerInterval = setInterval(() => {
@@ -141,16 +140,22 @@
 
             if (!acceleration) return;
 
-            let deltaY = acceleration.y - lastAcceleration.y; // Diferença no eixo Y
+            let deltaY = acceleration.y - lastAcceleration.y; // Movimento vertical
+            let deltaX = acceleration.x - lastAcceleration.x; // Movimento horizontal
+
+            let currentTime = new Date().getTime();
+            if (currentTime - lastMoveTime < 1000) return; // Bloqueia múltiplas detecções em menos de 1s
 
             if (deltaY > motionThreshold) {
                 acertos++;
                 document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
                 proximaPergunta();
+                lastMoveTime = currentTime;
             } else if (deltaY < -motionThreshold) {
                 erros++;
                 document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
                 proximaPergunta();
+                lastMoveTime = currentTime;
             }
 
             lastAcceleration = acceleration;
