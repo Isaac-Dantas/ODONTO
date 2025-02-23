@@ -81,6 +81,7 @@
         let erros = 0;
         let tempo = 60;
         let timerInterval;
+        let lastY = null;
 
         function iniciarJogo() {
             clearInterval(timerInterval);
@@ -133,6 +134,30 @@
             document.getElementById("score").innerText = "Acertos: 0 | Erros: 0";
             clearInterval(timerInterval);
         }
+
+        function handleMotion(event) {
+            let y = event.accelerationIncludingGravity.y;
+
+            if (lastY === null) {
+                lastY = y;
+                return;
+            }
+
+            let deltaY = y - lastY;
+
+            if (deltaY < -2) { // Movimento para cima (acerto)
+                acertos++;
+                proximaPergunta();
+            } else if (deltaY > 2) { // Movimento para baixo (erro)
+                erros++;
+                proximaPergunta();
+            }
+
+            document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
+            lastY = y;
+        }
+
+        window.addEventListener("devicemotion", handleMotion);
     </script>
 </body>
 </html>
