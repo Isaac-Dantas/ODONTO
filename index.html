@@ -81,7 +81,8 @@
         let erros = 0;
         let tempo = 60;
         let timerInterval;
-        let lastY = null;
+        let lastAcceleration = { x: 0, y: 0, z: 0 };
+        let motionThreshold = 2; // Define um limite para evitar detecção excessiva
 
         function iniciarJogo() {
             clearInterval(timerInterval);
@@ -136,25 +137,23 @@
         }
 
         function handleMotion(event) {
-            let y = event.accelerationIncludingGravity.y;
+            let acceleration = event.accelerationIncludingGravity;
 
-            if (lastY === null) {
-                lastY = y;
-                return;
-            }
+            if (!acceleration) return;
 
-            let deltaY = y - lastY;
+            let deltaY = acceleration.y - lastAcceleration.y; // Diferença no eixo Y
 
-            if (deltaY < -2) { // Movimento para cima (acerto)
+            if (deltaY > motionThreshold) {
                 acertos++;
+                document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
                 proximaPergunta();
-            } else if (deltaY > 2) { // Movimento para baixo (erro)
+            } else if (deltaY < -motionThreshold) {
                 erros++;
+                document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
                 proximaPergunta();
             }
 
-            document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
-            lastY = y;
+            lastAcceleration = acceleration;
         }
 
         window.addEventListener("devicemotion", handleMotion);
