@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quem Sou Eu? - Odontologia</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s;
+            background-color: #f0f8ff;
+        }
+        #question {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        #timer {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #e74c3c;
+        }
+        #score {
+            font-size: 1.2rem;
+            color: #27ae60;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        button:hover {
+            transform: scale(1.1);
+        }
+        #startBtn { background-color: #3498db; }
+        #stopBtn { background-color: #e74c3c; }
+        #addTimeBtn { background-color: #2ecc71; }
+        #subtractTimeBtn { background-color: #f1c40f; }
+        #resetTimeBtn { background-color: #9b59b6; }
+    </style>
+</head>
+<body>
+    <div id="timer">Tempo: 60s</div>
+    <div id="question">Pressione "Começar" para iniciar o jogo!</div>
+    <div id="score">Acertos: 0 | Erros: 0</div>
+    <div class="button-container">
+        <button id="startBtn" onclick="iniciarJogo()">Começar</button>
+        <button id="stopBtn" onclick="pararJogo()">Parar</button>
+        <button id="addTimeBtn" onclick="adicionarTempo()">+ Tempo</button>
+        <button id="subtractTimeBtn" onclick="diminuirTempo()">- Tempo</button>
+        <button id="resetTimeBtn" onclick="resetarTempo()">Resetar Tempo</button>
+    </div>
+    
+    <script>
+        const perguntas = [
+            "Dentre os ossos abaixo, aquele que não participa na formação da órbita é: a) osso frontal b) osso zigomático c) osso palatino d) mandíbula e) osso esfenóide",
+            "O bregma está localizado no: a) Ponto de união das suturas coronal e sagital b) Ponto de união das suturas lambdóides c) Ponto de união das suturas internasal e frontonasal d) Centro da sutura sagital e) Fossa temporal",
+            "A formação de fendas é um dos defeitos congênitos mais frequentes em humanos. A manifestação clínica mais branda da fenda palatina é: a) úvula bífida b) fenda labial c) fenda palatina completa d) fenda alveolar e) fenda submucosa",
+            "Qual músculo é inervado pelo nervo acessório? a) Esternocleidomastóideo b) Masseter c) Temporal d) Orbicular da boca e) Platisma",
+            "Quantos ossos compõem a divisão do crânio chamada de neurocrânio? a) 6 b) 7 c) 8 d) 9 e) 10"
+        ];
+        let index = 0;
+        let acertos = 0;
+        let erros = 0;
+        let tempo = 60;
+        let timerInterval;
+
+        function iniciarJogo() {
+            clearInterval(timerInterval);
+            tempo = 60;
+            acertos = 0;
+            erros = 0;
+            index = 0;
+            document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
+            document.getElementById("score").innerText = `Acertos: ${acertos} | Erros: ${erros}`;
+            proximaPergunta();
+            timerInterval = setInterval(() => {
+                tempo--;
+                document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
+                if (tempo <= 0) {
+                    clearInterval(timerInterval);
+                    alert(`Fim do jogo! Acertos: ${acertos} | Erros: ${erros}`);
+                }
+            }, 1000);
+        }
+
+        function proximaPergunta() {
+            if (index < perguntas.length) {
+                document.getElementById("question").innerText = perguntas[index];
+                index++;
+            } else {
+                document.getElementById("question").innerText = "Fim das perguntas!";
+            }
+        }
+
+        function pararJogo() {
+            clearInterval(timerInterval);
+        }
+
+        function adicionarTempo() {
+            tempo += 10;
+            document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
+        }
+
+        function diminuirTempo() {
+            if (tempo > 5) {
+                tempo -= 5;
+                document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
+            }
+        }
+
+        function resetarTempo() {
+            tempo = 60;
+            document.getElementById("timer").innerText = `Tempo: ${tempo}s`;
+            document.getElementById("question").innerText = "Pressione \"Começar\" para iniciar o jogo!";
+            document.getElementById("score").innerText = "Acertos: 0 | Erros: 0";
+            clearInterval(timerInterval);
+        }
+    </script>
+</body>
+</html>
